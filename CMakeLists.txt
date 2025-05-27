@@ -14,58 +14,76 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(obeygdbot VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
-    src/utils/utils.cpp
-    # src/utils/utils.hpp
-    src/utils/bg.cpp
-    # src/utils/bg.hpp
-    src/ui/settings.cpp
-    # src/ui/settings.hpp
 
-    # src/ui/popups/CustomizeProfilePopup.hpp
-    # Profiles
-    # src/profile/main.hpp
-    src/profile/main.cpp
-    src/profile/commentCell.cpp
-    # more settings
-    # src/settings/SettingsEnum.hpp
-
-    # src/settings/OGDBSettingCell.hpp
-    src/settings/OGDBSettingCell.cpp
-    # src/settings/OGDBSetting.hpp
-    src/settings/OGDBSetting.cpp
-    # more utils
-    # src/utils/FLSelectorLayer.hpp
-    # images
-    src/utils/OGDBAutoImage.cpp
-    src/utils/OGDBAutoImage.hpp
-    # web
-    # src/utils/OGDBRequests.hpp
-    # cache
-    src/utils/OGDBCache.cpp
-    src/utils/OGDBCache.hpp
-
-    # src/utils/delegates/customColorCallback.hpp
-    # Preassets
-    src/presets/OGDBPresetProfile.cpp
-    # src/presets/OGDBPresetProfile.hpp
-    src/presets/assets/CustomBackgroundSprite.cpp
-    # src/presets/assets/CustomBackgroundSprite.hpp
-    src/presets/assets/CustomSubbackground.cpp
-    # src/presets/assets/CustomSubbackground.hpp
-    src/presets/assets/CustomBorderSprite.cpp
-    # src/presets/assets/CustomBorderSprite.hpp
-    #
-    src/presets/assets/CustomIconsBackground.cpp
-    # src/presets/assets/CustomIconsBackground.hpp
-    src/presets/assets/CustomCommentsBackground.cpp
-    # src/presets/assets/CustomCommentsBackground.hpp
-    
-    
-
-    # Add any extra C++ source files here
+file(GLOB SOURCES
+    src/*.cpp
+    src/presets/*.cpp
+    src/profile/*.cpp
+    src/ui/*.cpp
+    src/ui/popups/*.cpp
+    src/utils/*.cpp
 )
+
+
+# file(GLOB_RECURSE SOURCES
+#     src/*.cpp
+# )
+
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+
+# add_library(${PROJECT_NAME} SHARED
+#     src/main.cpp
+#     src/utils/utils.cpp
+#     # src/utils/utils.hpp
+#     src/utils/bg.cpp
+#     # src/utils/bg.hpp
+#     src/ui/settings.cpp
+#     # src/ui/settings.hpp
+
+#     # src/ui/popups/CustomizeProfilePopup.hpp
+#     # Profiles
+#     # src/profile/main.hpp
+#     src/profile/main.cpp
+#     src/profile/commentCell.cpp
+#     # more settings
+#     # src/settings/SettingsEnum.hpp
+
+#     # src/settings/OGDBSettingCell.hpp
+#     src/settings/OGDBSettingCell.cpp
+#     # src/settings/OGDBSetting.hpp
+#     src/settings/OGDBSetting.cpp
+#     # more utils
+#     # src/utils/FLSelectorLayer.hpp
+#     # images
+#     src/utils/OGDBAutoImage.cpp
+#     src/utils/OGDBAutoImage.hpp
+#     # web
+#     # src/utils/OGDBRequests.hpp
+#     # cache
+#     src/utils/OGDBCache.cpp
+#     src/utils/OGDBCache.hpp
+
+#     # src/utils/delegates/customColorCallback.hpp
+#     # Preassets
+#     src/presets/OGDBPresetProfile.cpp
+#     # src/presets/OGDBPresetProfile.hpp
+#     src/presets/assets/CustomBackgroundSprite.cpp
+#     # src/presets/assets/CustomBackgroundSprite.hpp
+#     src/presets/assets/CustomSubbackground.cpp
+#     # src/presets/assets/CustomSubbackground.hpp
+#     src/presets/assets/CustomBorderSprite.cpp
+#     # src/presets/assets/CustomBorderSprite.hpp
+#     #
+#     src/presets/assets/CustomIconsBackground.cpp
+#     # src/presets/assets/CustomIconsBackground.hpp
+#     src/presets/assets/CustomCommentsBackground.cpp
+#     # src/presets/assets/CustomCommentsBackground.hpp
+    
+    
+
+#     # Add any extra C++ source files here
+# )
 
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")

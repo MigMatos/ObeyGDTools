@@ -245,7 +245,13 @@ protected:
             color1Btn->setTag((tag_color * 10) + 1);
             this->setFullScale(color1Btn, 0.4f);
 
-            auto colorDefaultBtns = createMenuWithItem(color1Btn, CCPoint({(label->getPositionX() + label->getScaledContentWidth() + 2.5f), y}), ccp(0.f, 0.5f));
+            // auto colorDefaultBtns = createMenuWithItem(color1Btn, CCPoint({(label->getPositionX() + label->getScaledContentWidth() + 2.5f), y}), ccp(0.f, 0.5f));
+            
+            auto colorDefaultBtns = createMenuWithItem(
+                color1Btn,
+                CCPoint(label->getPositionX() + label->getScaledContentWidth() + 2.5f, y),
+                ccp(0.f, 0.5f)
+            );
             colorDefaultBtns->setLayout(static_cast<AxisLayout*>(colorDefaultBtns->getLayout())->setGap(5.f)->setAxisAlignment(AxisAlignment::Start));
 
             // Col2
