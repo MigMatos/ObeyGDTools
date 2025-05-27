@@ -769,17 +769,17 @@ protected:
         ProfilePage::create(GJAccountManager::get()->m_accountID, false)->show();
     }
 
-    CCMenu& getButtonsPersistent(int groupIndex) {
-        switch (groupIndex) {
-            case 1: return buttonsColorsPer1;
-            case 2: return buttonsColorsPer2;
-            case 3: return buttonsColorsPer3;
-            case 4: return buttonsColorsPer4;
-            case 5: return buttonsColorsPer5;
-            case 6: return buttonsColorsPer6;
-            default: return buttonsColorsPer6;
-        }
-    }
+    // CCMenu& getButtonsPersistent(int groupIndex) {
+    //     switch (groupIndex) {
+    //         case 1: return buttonsColorsPer1;
+    //         case 2: return buttonsColorsPer2;
+    //         case 3: return buttonsColorsPer3;
+    //         case 4: return buttonsColorsPer4;
+    //         case 5: return buttonsColorsPer5;
+    //         case 6: return buttonsColorsPer6;
+    //         default: return buttonsColorsPer6;
+    //     }
+    // }
 
     int& getColorPersistent(int groupIndex) {
         switch (groupIndex) {
@@ -863,7 +863,7 @@ protected:
         ColorChannelSprite* sprite = getSpriteForGroup(groupIndex);
         CCLabelBMFont* percentLabel = getPercentLabelForGroup(groupIndex);
         int& colorPersistent = getColorPersistent(groupIndex);
-        CCMenu& colorBtns = getButtonsPersistent(groupIndex);
+        // CCMenu& colorBtns = getButtonsPersistent(groupIndex);
 
         
 
