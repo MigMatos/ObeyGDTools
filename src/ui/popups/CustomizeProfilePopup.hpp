@@ -2,17 +2,17 @@
 
 #include <Geode/Geode.hpp>
 
-#include "../utils/OGDBAutoImage.hpp"
+#include "../../utils/OGDBAutoImage.hpp"
 
-#include "../presets/OGDBPresetProfile.hpp"
-#include "../presets/assets/CustomBackgroundSprite.hpp"
-#include "../presets/assets/CustomBorderSprite.hpp"
-#include "../presets/assets/CustomSubbackground.hpp"
+#include "../../presets/OGDBPresetProfile.hpp"
+#include "../../presets/assets/CustomBackgroundSprite.hpp"
+#include "../../presets/assets/CustomBorderSprite.hpp"
+#include "../../presets/assets/CustomSubbackground.hpp"
 // new in 1.0-b
-#include "../presets/assets/CustomIconsBackground.hpp"
-#include "../presets/assets/CustomCommentsBackground.hpp"
+#include "../../presets/assets/CustomIconsBackground.hpp"
+#include "../../presets/assets/CustomCommentsBackground.hpp"
 
-#include "../utils/FLSelectorLayer.hpp"
+#include "../../utils/FLSelectorLayer.hpp"
 
 // Extra
 #include <Geode/ui/Popup.hpp>
