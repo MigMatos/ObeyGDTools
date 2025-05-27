@@ -11,7 +11,9 @@
 #include "presets/assets/CustomBackgroundSprite.hpp"
 #include "presets/assets/CustomBorderSprite.hpp"
 #include "presets/assets/CustomSubbackground.hpp"
-
+// N
+#include "CustomCommentsBackground.hpp"
+#include "CustomIconsBackground.hpp"
 
 using namespace geode::prelude;
 
@@ -45,6 +47,8 @@ $on_mod(Loaded) {
 	CustomBackgroundSprite::init();
 	CustomBorderSprite::init();
 	CustomSubbackground::init();
+	CustomIconsBackground::init();
+	CustomCommentsBackground::init();
     log::info("Mod {} version {} has been loaded.", mod->getID(), mod->getVersion());
 }
 
