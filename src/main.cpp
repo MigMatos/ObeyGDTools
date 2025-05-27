@@ -12,8 +12,8 @@
 #include "presets/assets/CustomBorderSprite.hpp"
 #include "presets/assets/CustomSubbackground.hpp"
 // N
-#include "CustomCommentsBackground.hpp"
-#include "CustomIconsBackground.hpp"
+#include "presets/assets/CustomCommentsBackground.hpp"
+#include "presets/assets/CustomIconsBackground.hpp"
 
 using namespace geode::prelude;
 
