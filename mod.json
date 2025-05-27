@@ -1,0 +1,30 @@
+{
+	"geode": "4.5.0",
+    "gd": {
+        "win": "2.2074",
+		"android": "2.2074"
+    },
+	"version": "v1.0.0-alpha.1",
+	"id": "migmatos.obeygdtools",
+	"name": "ObeyGDTools",
+	"developers": ["MigMatos","ObeyGDTeam"],
+	"description": "",
+	"dependencies": {
+		"geode.node-ids": {
+			"version": ">=v1.20.1",
+			"importance": "required"
+		}
+	},
+	"links": {
+		"source": "https://github.com/MigMatos/"
+	},
+	"tags": ["utility", "customization", "interface", "online"],
+	"resources": {
+        "sprites": [
+            "resources/backgrounds/*.png",
+			"resources/borders/*.png",
+			"resources/subbackgrounds/*.png",
+			"resources/*.png"
+        ]
+    }
+}
