@@ -58,5 +58,5 @@ void CustomBackgroundSprite::init() {
     registerSprite("bg_luminightglade_00", "Luminight Glade", "luminightglade_bg_00.png"_spr);
 
     // registerSprite("bg_halloween_25", "Halloween (2025)", "halloween_bg_25.png"_spr);
-    // registerSprite("bg_rainbow_25", "Rainbow (2025)", "rainbow_bg_25.png"_spr);
+    registerSprite("bg_rainbow_25", "Rainbow (2025)", "rainbow_bg_25.png"_spr);
 }
