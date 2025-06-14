@@ -52,6 +52,6 @@ void CustomCommentsBackground::init() {
     registerSubbackground("sub_c9_dark_00", "dark_b_01.png"_spr, CCRectMake(0, 0, 0, 0), "Partially Dark");
 
     registerSubbackground("sub_c9_darkstar_00", "darkstar_b_00.png"_spr, CCRectMake(0, 0, 0, 0), "DarkStar");
-    // registerSubbackground("sub_c9_rainbow_25", "rainbow_b_00.png"_spr, CCRectMake(0, 0, 0, 0), "Rainbow");
+    registerSubbackground("sub_c9_rainbow_25", "rainbow_b_00.png"_spr, CCRectMake(0, 0, 0, 0), "Rainbow");
     registerSubbackground("sub_c9_murasakiskies_25", "murasakiskies_b_00.png"_spr, CCRectMake(0, 0, 0, 0), "Murasaki Skies");
 }

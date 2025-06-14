@@ -690,7 +690,7 @@ protected:
     */
 
 
-    void onSelectSubBGProfile(CCObject* ObjectSelect) { //
+    void onSelectSubBGProfile(CCObject*) { //
 
 
         auto FLSelector = FLSelectorLayer::create();
@@ -721,16 +721,13 @@ protected:
                         m_bgSubSprite_char = spritePath;
                         m_bgSubSprite_charID = spriteID;
 
-                        spriteBtnBGComment->updateBGImage(spritePath);
-                        m_bgCommentSprite_char = spritePath;
-                        m_bgCommentSprite_charID = spriteID;
-
                         checkIfModified();
                     }
                 }
             }
         });
 
+        FLSelector->show(); // im stupid bruh
     }
     
 

@@ -31,7 +31,8 @@ OGDBBackground* OGDBBackground::create() {
     auto rect = sprite3->getTextureRect();
     rect.size.height = 320;
     rect.origin.y = 13.5;
-    // rect.size.width = winSize.width; 
+    rect.size.width = winSize.width; // Fix for mobiles
+    
     sprite3->setTextureRect(rect);
 
     sprite3->setAnchorPoint({ 0.0f, 1.0f }); 
