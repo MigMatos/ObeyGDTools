@@ -216,11 +216,10 @@ protected:
             btn->setTag(tag_color);
             btn->setScale(0.6f);
             btn->m_baseScale = 0.6f;
-
-
+            
             auto menu = CCMenu::createWithItem(btn);
-            menu->setAnchorPoint({0.535f, 0.5f});
-            menu->setPosition({xStart + 80, y});
+            menu->setAnchorPoint({0.5f, 0.5f});
+            menu->setPosition({ (xStart + 60) , y});
             menu->setLayout(AxisLayout::create()
                 ->setAxisAlignment(AxisAlignment::Center)
                 ->setCrossAxisAlignment(AxisAlignment::Center)

@@ -40,4 +40,8 @@ public:
 	static void setSliderWidth(Slider* slider, float width);
 
 	static void CleanListLayer(cocos2d::CCLayer* layer, int width, int height, bool useFirstChild = false);
+
+	static bool checkGDAccount(bool showAlert = false, int accountID = -9999);
+
+	static bool checkOGDBAccount(int accountID, bool showAlert = false);
 };

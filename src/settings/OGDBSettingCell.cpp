@@ -304,6 +304,9 @@ bool OGDBSettingCell::init(
         }
 
         case SettingEnum::Type::Setting_Profile_Custom : {
+
+            if(!OGDBUtils::checkGDAccount(true)) break;
+            
             auto buttonSprite = ButtonSprite::create(
                 "Open",
                 "bigFont.fnt",  

@@ -29,15 +29,16 @@ OGDBBackground* OGDBBackground::create() {
     sprite3->getTexture()->setTexParameters(&params);
 
     auto rect = sprite3->getTextureRect();
+    float globalScale = 0.55f;
     rect.size.height = 320;
     rect.origin.y = 13.5;
-    rect.size.width = winSize.width; // Fix for mobiles
+    rect.size.width = winSize.width / globalScale; // Fix for mobiles
     
     sprite3->setTextureRect(rect);
 
     sprite3->setAnchorPoint({ 0.0f, 1.0f }); 
     sprite3->setPosition({ 0, (rect.size.height * 0.55f)});  
-    sprite3->setScale(0.55f);
+    sprite3->setScale(globalScale);
     sprite3->setColor(ccc3(132, 2, 255));  
 
     sprite3->setContentSize({ rect.size.width, rect.size.height });
@@ -56,7 +57,7 @@ OGDBBackground* OGDBBackground::create() {
 
     sprite2->setAnchorPoint({ 0.0f, 1.0f }); 
     sprite2->setPosition({ 0, ((rect.size.height * 0.45f)) }); 
-    sprite2->setScale(0.55f);
+    sprite2->setScale(globalScale);
     sprite2->setColor(ccc3(58, 0, 209));          
 
     sprite2->setContentSize({ rect.size.width, rect.size.height });
@@ -75,7 +76,7 @@ OGDBBackground* OGDBBackground::create() {
 
     sprite->setAnchorPoint({ 0.0f, 1.0f }); 
     sprite->setPosition({ 0, (rect.size.height * 0.3f) });  
-    sprite->setScale(0.55f);
+    sprite->setScale(globalScale);
     sprite->setColor(ccc3(50, 9, 123)) ;
 
     sprite->setContentSize({ rect.size.width, rect.size.height });

@@ -6,6 +6,7 @@
 void OGDBUtils::WIPFeature(CCObject*) 
 {
 	FLAlertLayer::create("WIP", "This feature is <cr>not finished</c>, wait for future <cg>updates!</c>", "OK")->show();
+    return;
 }
 
 cocos2d::ccColor4B OGDBUtils::ToColor4B(ccColor3B c, GLubyte transparentValue)
@@ -138,4 +139,30 @@ void OGDBUtils::CleanListLayer(CCLayer* layer, int targetWidth, int targetHeight
 			node->setZOrder(2);
 		}
 	}
+}
+
+// Return true if user is logged in GD
+bool OGDBUtils::checkGDAccount(bool showAlert, int accountID) {
+    if(accountID <= -9999) accountID = GJAccountManager::sharedState()->m_accountID;
+    if (accountID <= 0 && showAlert == true) {
+        FLAlertLayer::create(
+            "Login Required",
+            "<cr>You need to be logged in</c> <cy>to a Geometry Dash account</c> to access this feature.",
+            "OK"
+        )->show();
+        return false;
+    }
+    return true;
+}
+
+bool OGDBUtils::checkOGDBAccount(int accountID, bool showAlert) {
+    if (accountID <= 0 && showAlert == true) {
+        FLAlertLayer::create(
+            "Login Required",
+            "<cr>You need to be logged in</c> <cy>to a ObeyGDTeam account</c> to access this feature.",
+            "OK"
+        )->show();
+        return false;
+    }
+    return true;
 }
