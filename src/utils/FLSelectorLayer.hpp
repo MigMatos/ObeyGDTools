@@ -40,9 +40,14 @@ public:
         m_id = id;
         m_callback = callback;
 
+        auto container = CCNode::create();
+        container->setScale(0.5f); // Escala visual interna
+        container->setPosition({ 0.f, 0.f });
+        this->addChild(container);
+
         auto menu = CCMenu::create();
         menu->setPosition(CCPointZero);
-        this->addChild(menu);
+        container->addChild(menu);
 
         m_toggle = CCMenuItemToggler::createWithStandardSprites(
             this,
@@ -55,9 +60,9 @@ public:
         m_label = CCLabelBMFont::create(title.c_str(), "bigFont.fnt");
         m_label->setAnchorPoint({ 0, 0.5f });
         m_label->setPosition({ 65.f, 26.f });
-        this->addChild(m_label);
+        container->addChild(m_label);
 
-        this->setContentSize({ 220.f, 50.f });
+        this->setContentSize({ 220.f * 0.5f, 50.f * 0.5f }); // Tamaño real adaptado al layout
 
         return true;
     }
@@ -78,6 +83,8 @@ public:
     bool isSelected() const { return m_toggle->isToggled(); }
 };
 
+/* Selector Popup */
+
 class FLSelectorLayer : public Popup<> {
 protected:
     bool m_multi = false;
@@ -87,16 +94,15 @@ protected:
     std::string m_title = "Selector";
     const char* m_FLbgSprite_char = "square01_001.png";
 
-    CCSize m_listSize = CCSize(650.f, 400.f);
-    CCPoint m_listPosition = CCPoint(25.f, 45.f);
-    CCPoint m_listAnchor = CCPoint(0.f, 0.f);
-    float m_listScale = 0.5f;
-
     CCScale9Sprite* bg_listSize = CCScale9Sprite::create("dark_b_00.png"_spr);
 
-    CCArray* m_items = CCArray::create();
-    ListView* m_listView = nullptr;
+    CCSize m_listSize = CCSize(320.f, 212.5f);
+    CCPoint m_listPosition = CCPoint(25.f, 43.5f);
+    CCPoint m_listAnchor = CCPoint(0.f, 0.f);
+
+    ScrollLayer* m_listView = nullptr;
     Scrollbar* m_scrollBar = nullptr;
+
     std::map<int, FLSelectorCell*> m_cellMap;
     std::set<int> m_selected;
 
@@ -109,63 +115,54 @@ protected:
 
         bg_listSize->setContentSize(m_listSize + CCSize(0.f, 5.f));
         bg_listSize->setAnchorPoint(m_listAnchor);
-        bg_listSize->setZOrder(-2);
+        bg_listSize->setOpacity(200);
+        bg_listSize->setPosition(25.f , 41.5f);
+        bg_listSize->setZOrder(1);
+        this->m_mainLayer->addChild(bg_listSize);
 
-        m_emptyLabel->setPosition({185.f, 145.f}); // ok, static
+
+        m_emptyLabel->setPosition({185.f, 145.f});
         m_emptyLabel->setColor({255,45,45});
         m_emptyLabel->setScale(0.6f);
         this->m_mainLayer->addChild(m_emptyLabel, 10);
 
-        m_listView = ListView::create(
-            m_items,
-            FLSelectorCell::create("TEMP", 0, nullptr)->getContentSize().height,
-            m_listSize.width,
-            m_listSize.height
+        m_listView = ScrollLayer::create(m_listSize);
+        m_listView->setTouchEnabled(true);
+        m_listView->m_contentLayer->setLayout(
+            ColumnLayout::create()
+                ->setAxisReverse(true)
+                ->setAutoGrowAxis(m_listView->getContentHeight())
+                ->setCrossAxisOverflow(false)
+                ->setAxisAlignment(AxisAlignment::End)
+                ->setCrossAxisAlignment(AxisAlignment::Start)
+                ->setGap(0)
         );
+        m_listView->moveToTop();
+        m_listView->setAnchorPoint(m_listAnchor);
+        m_listView->setPosition(m_listPosition);
+        m_listView->setZOrder(2);
+        m_mainLayer->addChild(m_listView);
 
-        
-
-        m_scrollBar = Scrollbar::create(
-            dynamic_cast<CCScrollLayerExt*>(m_listView->m_tableView)
-        );
-        m_scrollBar->setContentSize({10.f, m_listSize.height / 2});
-        m_scrollBar->setPosition({((m_listSize.width / 2) + m_listPosition.x + 3), m_listPosition.y});
+        m_scrollBar = Scrollbar::create(dynamic_cast<CCScrollLayerExt*>(m_listView));
+        m_scrollBar->setPosition({ 350 , m_listPosition.y });
         m_scrollBar->setAnchorPoint(m_listAnchor);
         m_scrollBar->ignoreAnchorPointForPosition(true);
-        m_scrollBar->setScale(m_listScale);
-
         m_scrollBar->setTouchEnabled(true);
-        // m_scrollBar->m_contentLayer->setLayout(
-        //     ColumnLayout::create()
-        //         ->setAxisReverse(true)
-        //         ->setAutoGrowAxis(m_scrollBar->getContentHeight())
-        //         ->setCrossAxisOverflow(false)
-        //         ->setAxisAlignment(AxisAlignment::End)
-        //         ->setGap(0)
-        // );
-        dynamic_cast<CCScrollLayerExt*>(m_listView->m_tableView)->moveToTop();
-
-        this->m_mainLayer->addChild(m_scrollBar);
-
-        setOriginalThemeList();
-        this->m_mainLayer->addChild(m_listView);
+        m_mainLayer->addChild(m_scrollBar);
 
         auto btns = CCMenu::create();
-
         auto cancelBtn = CCMenuItemSpriteExtra::create(
             ButtonSprite::create("Cancel"),
             this,
             menu_selector(FLSelectorLayer::onCancel)
         );
-        btns->addChild(cancelBtn);
-
         auto okBtn = CCMenuItemSpriteExtra::create(
             ButtonSprite::create("OK"),
             this,
             menu_selector(FLSelectorLayer::onOK)
         );
+        btns->addChild(cancelBtn);
         btns->addChild(okBtn);
-
         btns->setPosition(185.f, 133.f);
         btns->setScale(0.75f);
         btns->setLayout(SimpleAxisLayout::create(Axis::Row)
@@ -174,11 +171,9 @@ protected:
             ->setMainAxisDirection(AxisDirection::LeftToRight)
             ->setGap(25.f)
         );
-
         m_mainLayer->addChild(btns);
 
         updateEmptyLabel();
-
         return true;
     }
 
@@ -205,29 +200,19 @@ protected:
         this->removeFromParentAndCleanup(true);
     }
 
-    void setOriginalThemeList() {
-        m_listView->setAnchorPoint(m_listAnchor);
-        m_listView->setPosition(m_listPosition);
-        m_listView->setScale(m_listScale);
-        m_listView->setPrimaryCellColor({0, 0, 0});
-        m_listView->setSecondaryCellColor({255, 255, 255});
-        m_listView->setCellOpacity(15);
-        m_listView->m_tableView->addChild(bg_listSize);
-    }
-
     void updateEmptyLabel() {
         if (m_emptyLabel) {
-            m_emptyLabel->setVisible(m_items->count() == 0);
+            m_emptyLabel->setVisible(m_cellMap.empty());
         }
     }
 
     void updateScrollbar() {
-        if (m_listView && m_scrollBar && m_items->count() >= 2) {
+        if (m_listView && m_scrollBar && m_cellMap.size() >= 11) {
             m_scrollBar->setVisible(true);
-            m_scrollBar->setTarget(dynamic_cast<CCScrollLayerExt*>(m_listView->m_tableView));
         } else {
             m_scrollBar->setVisible(false);
         }
+        m_scrollBar->setTarget(dynamic_cast<CCScrollLayerExt*>(m_listView));
     }
 
 public:
@@ -246,8 +231,6 @@ public:
             ret->m_max = (max >= ret->m_min) ? max : ret->m_min;
             ret->m_title = title;
             ret->m_FLbgSprite_char = FLbgSprite_char;
-            ret->m_items = CCArray::create();
-            ret->m_items->retain();
             ret->autorelease();
             return ret;
         }
@@ -278,15 +261,31 @@ public:
 
         cell->setSelected(selected);
         if (selected) m_selected.insert(id);
-
         m_cellMap[id] = cell;
-        m_items->addObject(cell);
 
-        if (m_listView)
-            m_listView->draw();
+        if (m_listView) {
+            int index = m_listView->m_contentLayer->getChildrenCount();
+            if (index % 2 != 0) {
+                auto bg = CCLayerColor::create(ccc4(0, 0, 0, 40), m_listSize.width, 25.f);
+                bg->setAnchorPoint({ 0.f, 0.f });
+                cell->addChild(bg, -1);
+            }
+            m_listView->m_contentLayer->addChild(cell);
+            m_listView->m_contentLayer->updateLayout();
+        }
 
         updateEmptyLabel();
-        
+        updateScrollbar();
+    }
+
+    void clearOptions() {
+        if (m_listView) {
+            m_listView->m_contentLayer->removeAllChildrenWithCleanup(true);
+        }
+        m_cellMap.clear();
+        m_selected.clear();
+        updateEmptyLabel();
+        updateScrollbar();
     }
 
     void update() {
@@ -295,18 +294,38 @@ public:
             m_listView = nullptr;
         }
 
-        if (!m_items) return;
-
-        m_listView = ListView::create(
-            m_items,
-            FLSelectorCell::create("TEMP", 0, nullptr)->getContentSize().height,
-            m_listSize.width,
-            m_listSize.height
+        m_listView = ScrollLayer::create(m_listSize);
+        m_listView->setTouchEnabled(true);
+        m_listView->m_contentLayer->setLayout(
+            ColumnLayout::create()
+                ->setAxisReverse(true)
+                ->setAutoGrowAxis(m_listView->getContentHeight())
+                ->setCrossAxisOverflow(false)
+                ->setAxisAlignment(AxisAlignment::End)
+                ->setCrossAxisAlignment(AxisAlignment::Start)
+                ->setGap(0)
         );
-
-        setOriginalThemeList();
+        
+        // m_listView->setAnchorPoint(m_listAnchor);
+        m_listView->setPosition(m_listPosition);
+        m_listView->setZOrder(2);
         m_mainLayer->addChild(m_listView);
 
+        int index = 0;
+        for (auto& [id, cell] : m_cellMap) {
+            // if (index % 2 != 0) {
+            //     auto bg = CCLayerColor::create(ccc4(0, 0, 0, 15), 110.f, 25.f);
+            //     bg->setAnchorPoint({ 0.f, 0.f });
+            //     cell->addChild(bg, -1);
+            // }
+            m_listView->m_contentLayer->addChild(cell);
+            ++index;
+        }
+
+        m_listView->m_contentLayer->updateLayout();
+
+        m_listView->moveToTop();
+        
         updateEmptyLabel();
         updateScrollbar();
     }

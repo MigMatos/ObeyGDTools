@@ -305,8 +305,6 @@ bool OGDBSettingCell::init(
 
         case SettingEnum::Type::Setting_Profile_Custom : {
 
-            if(!OGDBUtils::checkGDAccount(true)) break;
-            
             auto buttonSprite = ButtonSprite::create(
                 "Open",
                 "bigFont.fnt",  
@@ -514,5 +512,6 @@ CCMenu* OGDBSettingCell::createDefaultSpriteCCMenu(float globalOffSet) {
 
 // --- Custom --- // Profile Custom
 void OGDBSettingCell::onCustom_PopupProfileCustom(CCObject* sender) {
+    if(!OGDBUtils::checkGDAccount(true)) return;
     CustomizeProfilePopup::create()->show();
 }

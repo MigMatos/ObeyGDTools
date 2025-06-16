@@ -128,7 +128,7 @@ protected:
         colorPersistentToggle1 = OGDBSetting::get("PROFILE_BACKGROUND_COLOR_PERSISTENT")->getValue<int>();
         colorPersistentToggle2 = OGDBSetting::get("PROFILE_BACKGROUND_COLOR_2_PERSISTENT")->getValue<int>();
         colorPersistentToggle3 = OGDBSetting::get("PROFILE_BACKGROUND_SUBLAYER_COLOR_PERSISTENT")->getValue<int>();
-        colorPersistentToggle4 = OGDBSetting::get("PROFILE_BACKGROUND_COLOR_PERSISTENT")->getValue<int>();
+        colorPersistentToggle4 = OGDBSetting::get("PROFILE_BACKGROUND_BORDER_COLOR_PERSISTENT")->getValue<int>();
         colorPersistentToggle5 = OGDBSetting::get("PROFILE_BACKGROUND_ICONS_COLOR_PERSISTENT")->getValue<int>();
         colorPersistentToggle6 = OGDBSetting::get("PROFILE_BACKGROUND_COMMENTS_COLOR_PERSISTENT")->getValue<int>();
 
@@ -183,12 +183,10 @@ protected:
         m_mainLayer->addChild(bgViewerBtnsC9);
         // -
 
-
-
         auto winSize = CCDirector::sharedDirector()->getWinSize();
         float xStart = 10.f, yStart = 170.f, yStep = 22.5f;
 
-        auto makeColorPicker = [&](int tag_color, float y, const char* title, ccColor4B& color, ColorChannelSprite** outSprite, CCLabelBMFont** outPercent, CCMenu** buttonsColors) {
+        auto makeColorPicker = [&](int tag_color, float y, const char* title, ccColor4B& color, ColorChannelSprite** outSprite, CCLabelBMFont** outPercent, CCMenu** buttonsColors, int colorSelected) {
             auto label = CCLabelBMFont::create(title, "bigFont.fnt");
             float baseScale = 0.45f;
             label->setScale(baseScale);
@@ -238,10 +236,13 @@ protected:
             // Set Auto Color btns
             // Col1
             CCMenuItemSpriteExtra* color1Btn = CCMenuItemSpriteExtra::create(
-                ButtonSprite::create("Col1", "bigFont.fnt", "GJ_button_04.png", 0.5f),
+                ButtonSprite::create("Col1", "bigFont.fnt", 
+                (colorSelected == 1) ? "GJ_button_02.png" : "GJ_button_04.png",
+                0.5f),
                 this, menu_selector(CustomizeProfilePopup::setDefaultColorPlayers)
             );
             color1Btn->setTag((tag_color * 10) + 1);
+            color1Btn->setID(CCString::createWithFormat("btn-persitent-color-%d"_spr, ((tag_color * 10) + 1))->getCString());
             this->setFullScale(color1Btn, 0.4f);
 
             // auto colorDefaultBtns = createMenuWithItem(color1Btn, CCPoint({(label->getPositionX() + label->getScaledContentWidth() + 2.5f), y}), ccp(0.f, 0.5f));
@@ -255,20 +256,26 @@ protected:
 
             // Col2
             CCMenuItemSpriteExtra* color2Btn = CCMenuItemSpriteExtra::create(
-                ButtonSprite::create("Col2", "bigFont.fnt", "GJ_button_04.png", 0.5f),
+                ButtonSprite::create("Col2", "bigFont.fnt",
+                (colorSelected == 2) ? "GJ_button_02.png" : "GJ_button_04.png",
+                0.5f),
                 this, menu_selector(CustomizeProfilePopup::setDefaultColorPlayers)
             );
             color2Btn->setTag((tag_color * 10) + 2);
+            color2Btn->setID(CCString::createWithFormat("btn-persitent-color-%d"_spr, ((tag_color * 10) + 2))->getCString());
             this->setFullScale(color2Btn, 0.4f);
             colorDefaultBtns->addChild(color2Btn);
 
 
             // Glow
             CCMenuItemSpriteExtra* colorGlowBtn = CCMenuItemSpriteExtra::create(
-                ButtonSprite::create("Glow", "bigFont.fnt", "GJ_button_04.png", 0.5f),
+                ButtonSprite::create("Glow", "bigFont.fnt", 
+                (colorSelected == 3) ? "GJ_button_02.png" : "GJ_button_04.png",
+                0.5f),
                 this, menu_selector(CustomizeProfilePopup::setDefaultColorPlayers)
             );
             colorGlowBtn->setTag((tag_color * 10) + 3);
+            colorGlowBtn->setID(CCString::createWithFormat("btn-persitent-color-%d"_spr, ((tag_color * 10) + 3))->getCString());
             this->setFullScale(colorGlowBtn, 0.4f);
             colorDefaultBtns->addChild(colorGlowBtn);
 
@@ -280,12 +287,12 @@ protected:
 
         };
 
-        makeColorPicker(1, yStart - yStep * 0, "BG Color 1", colorPicked1, &colorSprite1, &percent1, &buttonsColorsPer1);
-        makeColorPicker(2, yStart - yStep * 1, "BG Color 2", colorPicked2, &colorSprite2, &percent2, &buttonsColorsPer2);
-        makeColorPicker(3, yStart - yStep * 2, "BG Sublayer Color", colorPicked3, &colorSprite3, &percent3, &buttonsColorsPer3);
-        makeColorPicker(4, yStart - yStep * 3, "Border Color", colorPicked4, &colorSprite4, &percent4, &buttonsColorsPer4);
-        makeColorPicker(5, yStart - yStep * 4, "BG Color Icons", colorPicked5, &colorSprite5, &percent5, &buttonsColorsPer5);
-        makeColorPicker(6, yStart - yStep * 5, "BG Color Comments", colorPicked6, &colorSprite6, &percent6, &buttonsColorsPer6);
+        makeColorPicker(1, yStart - yStep * 0, "BG Color 1", colorPicked1, &colorSprite1, &percent1, &buttonsColorsPer1, colorPersistentToggle1);
+        makeColorPicker(2, yStart - yStep * 1, "BG Color 2", colorPicked2, &colorSprite2, &percent2, &buttonsColorsPer2, colorPersistentToggle2);
+        makeColorPicker(3, yStart - yStep * 2, "BG Sublayer Color", colorPicked3, &colorSprite3, &percent3, &buttonsColorsPer3, colorPersistentToggle3);
+        makeColorPicker(4, yStart - yStep * 3, "Border Color", colorPicked4, &colorSprite4, &percent4, &buttonsColorsPer4, colorPersistentToggle4);
+        makeColorPicker(5, yStart - yStep * 4, "BG Color Icons", colorPicked5, &colorSprite5, &percent5, &buttonsColorsPer5, colorPersistentToggle5);
+        makeColorPicker(6, yStart - yStep * 5, "BG Color Comments", colorPicked6, &colorSprite6, &percent6, &buttonsColorsPer6, colorPersistentToggle6);
 
         auto makeToggle = [&](int tag_id, float y, const char* title, CCMenuItemToggler** outToggle, bool defaultState) {
             auto on = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
@@ -442,12 +449,15 @@ protected:
         Mod::get()->setSavedValue("PROFILE_BACKGROUND_COMMENT_CUSTOM_SPRITE", std::string(m_bgCommentSprite_char));
         Mod::get()->setSavedValue("PROFILE_BACKGROUND_COMMENT_CUSTOM_SPRITE_ID", std::string(m_bgCommentSprite_charID));
         Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_COMMENT_CUSTOM_ANIMATE_ID", m_bgCommentSprite_animateID);
-        
 
-        // defaultToggle1 = !toggle1->isOn();
-        // defaultToggle2 = toggle2->isOn();
-        // defaultToggle3 = toggle3->isOn();
-        // defaultToggle4 = toggle4->isOn();
+        // Color persistent
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_COLOR_PERSISTENT", colorPersistentToggle1);
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_COLOR_2_PERSISTENT", colorPersistentToggle2);
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_SUBLAYER_COLOR_PERSISTENT", colorPersistentToggle3);
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_BORDER_COLOR_PERSISTENT", colorPersistentToggle4);
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_ICONS_COLOR_PERSISTENT", colorPersistentToggle5);
+        Mod::get()->setSavedValue<int>("PROFILE_BACKGROUND_COMMENTS_COLOR_PERSISTENT", colorPersistentToggle6);
+
         hasUncommitChanges = false;
         this->setBlockedSaveBtn(false);
     }
@@ -846,6 +856,36 @@ protected:
         auto actualNode = static_cast<CCMenuItemSpriteExtra*>(sender);
         int tag = actualNode->getTag();
 
+        auto updateColorButtons = [this](int tagID, int selectedValue) {
+            int baseTag = (tagID / 10) * 10;
+
+            for (int i = 1; i < 5; ++i) {
+                int currentTag = baseTag + i;
+
+                auto node = this->getChildByIDRecursive(
+                    CCString::createWithFormat("btn-persitent-color-%d"_spr, currentTag)->getCString()
+                );
+                if (!node) continue;
+
+                auto button = reinterpret_cast<CCMenuItemSpriteExtra*>(node);
+                if (!button) continue;
+
+                const char* label = (i == 3)
+                    ? "Glow"
+                    : CCString::createWithFormat("Col%d", i)->getCString();
+
+                auto sprite = ButtonSprite::create(
+                    label,
+                    "bigFont.fnt",
+                    (i == selectedValue) ? "GJ_button_02.png" : "GJ_button_04.png",
+                    0.5f
+                );
+
+                button->setSprite(sprite);
+            }
+        };
+
+
         int groupIndex = tag / 10; 
         int colorType = tag % 10; 
 
@@ -872,8 +912,7 @@ protected:
         switch (colorType) {
             case 1:
                 colorPersistent = (colorPersistent == 1 ? 0 : 1);
-                
-                
+                updateColorButtons(tag, colorPersistent);
                 // actualNode->setSprite(ButtonSprite::create(
                 //     "Col1", 
                 //     "bigFont.fnt", 
@@ -886,7 +925,7 @@ protected:
                 break;
             case 2:
                 colorPersistent = (colorPersistent == 2 ? 0 : 2);
-
+                updateColorButtons(tag, colorPersistent);
                 // actualNode->setSprite(ButtonSprite::create(
                 //     "Col2", 
                 //     "bigFont.fnt", 
@@ -899,7 +938,7 @@ protected:
                 break;
             case 3:
                 colorPersistent = (colorPersistent == 3 ? 0 : 3);
-
+                updateColorButtons(tag, colorPersistent);
                 // actualNode->setSprite(ButtonSprite::create(
                 //     "Glow", 
                 //     "bigFont.fnt", 

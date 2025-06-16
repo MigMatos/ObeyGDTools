@@ -153,7 +153,10 @@ class $modify(ProfilePage) {
                 scrollBarCommentsList->ignoreAnchorPointForPosition(true);
                 scrollBarCommentsList->setPosition(commentListLayerNode->getPosition() + CCPoint(listViewData->getContentSize().width+1.5f, 0));
                 scrollBarCommentsList->setContentSize(commentListLayerNode->getContentSize());
-                if(listViewData->getChildrenCount() > 2) scrollBarCommentsList->setVisible(true);
+
+                // Scrollbar
+                int childrenCommentsCount = dynamic_cast<CCContentLayer*>(scrollBarLayer->getChildren()->objectAtIndex(0))->getChildrenCount();
+                if(childrenCommentsCount >= 2) scrollBarCommentsList->setVisible(true);
             }
             
         } else if (CCScale9Sprite* nodeCommentBGCustom_Alt = dynamic_cast<CCScale9Sprite*>(layer->getChildByID("ogdb-commentlist-background"_spr))) {
@@ -498,6 +501,9 @@ class $modify(ProfilePage) {
         layer->addChild(m_bgIconsImage, nodeGJListLayerBG->getZOrder());
 
         // --------- COMMENT BACKGROUND --------- //
+
+        auto commentListLayerNode = static_cast<CCNode*>(layer->getChildByID("GJCommentListLayer"));
+        if(commentListLayerNode) commentListLayerNode->setVisible(false);
 
         ccColor4B m_bgComments_color = OGDBSetting::get("PROFILE_BACKGROUND_COMMENTS_COLOR")->getValue<ccColor4B>();
         int m_bgComments_persistentColor = OGDBSetting::get("PROFILE_BACKGROUND_COMMENTS_COLOR_PERSISTENT")->getValue<int>();
