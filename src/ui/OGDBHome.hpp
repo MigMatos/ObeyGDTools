@@ -6,6 +6,7 @@
 #include "../utils/utils.hpp"
 #include "../utils/bg.hpp"
 #include "settings.hpp"
+#include "OGDBLoading.hpp"
 
 using namespace geode::prelude;
 

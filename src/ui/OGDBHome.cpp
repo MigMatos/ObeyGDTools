@@ -12,6 +12,14 @@ bool OGDBHome::init() {
 
     fetchData("Home");
 
+    // ------------// 
+    
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto loading = OGDBLoading::create();
+    loading->setPosition(ccp(winSize.width / 2, winSize.height / 2));
+    this->addChild(loading, 999);
+
+    // ------------// 
 
     setKeypadEnabled(true);
 
