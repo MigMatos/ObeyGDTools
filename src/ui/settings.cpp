@@ -395,19 +395,20 @@ void OGDBSettingsLayer::onToggleOption(CCObject* sender) {
 
 void OGDBSettingsLayer::keyBackClicked() {
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
+
 }
 
 void OGDBSettingsLayer::backButtonCallback(CCObject* object) {
     keyBackClicked();
 }
 
-void OGDBSettingsLayer::switchToOGDBSettingsLayerButton(CCObject* object) {
+void OGDBSettingsLayer::switchToOGDBSettingScene(CCObject* object) {
 
     auto layer = OGDBSettingsLayer::create();
     auto scene = CCScene::create();
     scene->addChild(layer);
 
-    auto transition = CCTransitionFade::create(0.5f, scene);
+    auto transition = CCTransitionFadeBL::create(0.5f, scene);
 
     CCDirector::sharedDirector()->pushScene(transition);
     

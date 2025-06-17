@@ -25,6 +25,7 @@
             "resources/backgrounds/*.png",
 			"resources/borders/*.png",
 			"resources/subbackgrounds/*.png",
+			"resources/buttons/*.png",
 			"resources/*.png"
         ]
     }

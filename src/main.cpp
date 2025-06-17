@@ -5,6 +5,7 @@
 
 // My funcs
 #include "ui/settings.hpp"
+#include "ui/OGDBHome.hpp"
 #include "settings/OGDBSetting.hpp"
 // E
 #include "presets/OGDBPresetProfile.hpp"
@@ -24,9 +25,9 @@ class $modify(MyMenuLayer, MenuLayer) {
 			return false;
 		}
 		auto bntOGDBStt = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_profileButton_001.png"),
+			CCSprite::create("GJ_ogdtButton_001.png"_spr),
 			this,
-			menu_selector(OGDBSettingsLayer::switchToOGDBSettingsLayerButton)
+			menu_selector(OGDBHome::switchToOGDBHomeScene)
 		);
 
 		auto menu = this->getChildByID("bottom-menu");

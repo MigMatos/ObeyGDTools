@@ -304,6 +304,7 @@
 #include <functional>
 #include <map>          // Para std::map
 #include "OGDBCache.hpp"
+#include "../settings/OGDBSetting.hpp"
 
 using namespace geode::prelude;
 

@@ -64,7 +64,7 @@ class OGDBSettingsLayer : public CCLayer{
         static constexpr float LIST_HEIGHT = 220.f;
 
         static OGDBSettingsLayer* create();
-        void switchToOGDBSettingsLayerButton(CCObject*);
+        void switchToOGDBSettingScene(CCObject*);
 
         void onToggleOption(CCObject* sender);
 
