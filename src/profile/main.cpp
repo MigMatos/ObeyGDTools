@@ -64,9 +64,21 @@ class $modify(ProfilePage) {
         }
 
         static void fixIconsPos(cocos2d::CCNode* layer) {
-            CCNode* nodeGJListLayer = static_cast<CCNode*>(layer->getChildByID("player-menu"));
+            CCNode* nodeGJListLayer = dynamic_cast<CCNode*>(layer->getChildByIDRecursive("player-menu"));
             if(!nodeGJListLayer) return;
-            nodeGJListLayer->setLayout(static_cast<RowLayout*>(nodeGJListLayer->getLayout())->setAxisAlignment(AxisAlignment::End));
+            nodeGJListLayer->setPosition(nodeGJListLayer->getPosition() + ccp(1.5f, 0));
+            
+            if (auto GJLayoutNode = nodeGJListLayer->getLayout()) {
+                
+                // Idk why getLayout pass if when getLayout is nullptr -_-
+        
+                // auto rowLayout = dynamic_cast<RowLayout*>(GJLayoutNode); 
+
+                // Ok then create my own RowLayout :trollface:
+                auto rowLayout = RowLayout::create();
+                rowLayout->setGap(-0.75f);
+                nodeGJListLayer->setLayout(rowLayout);
+            }
         }
 
     //     static void getProfileDataFromOGDBAPI(cocos2d::CCNode* CCLayerMain, CCSize ImageSize, CCPoint ImagePosition) {
@@ -123,12 +135,18 @@ class $modify(ProfilePage) {
         auto commentListLayerNode = static_cast<CCNode*>(layer->getChildByID("GJCommentListLayer"));
         commentListLayerNode->setZOrder(1);
         auto listNode = commentListLayerNode->getChildByID("list-view");
+
+        // Scroll fix
+        if(Scrollbar* scrollBarCommentsList = dynamic_cast<Scrollbar*>(layer->getChildByID("ogdb-commentlist-scrollbar"_spr))){
+            auto scrollBarLayer = ScrollLayer::create(CCSize(100, 100));
+            scrollBarCommentsList->setTarget(scrollBarLayer);
+            scrollBarCommentsList->setVisible(false);
+        }
+        if(commentListLayerNode) commentListLayerNode->setVisible(false);
+        // --- //
+
         if (auto listViewData = dynamic_cast<CustomListView*>(listNode)) {
             
-            // Fix icons when reload/comments reload
-            // if(this->m_fields->m_fixIconsPosition) {
-            //     OGDBProfile::fixIconsPos(layer);
-            // }
 
             // Comment Lists
             if(!this->m_fields->m_commentsDefault) {
@@ -142,6 +160,12 @@ class $modify(ProfilePage) {
             if(!this->m_fields->m_iconsDefault) {
                 CCScale9Sprite* nodeIconBGCustom = static_cast<CCScale9Sprite*>(layer->getChildByID("ogdb-icon-background"_spr));
                 OGDBProfile::updateNodeBGProfile(nodeIconBGCustom, nodePlayerMenu);
+
+                // Fix icons when reload/comments reload
+                if(this->m_fields->m_fixIconsPosition) {
+                    OGDBProfile::fixIconsPos(layer);
+                }
+
             } else {
                 nodePlayerMenu->setVisible(true);
             }
@@ -165,15 +189,9 @@ class $modify(ProfilePage) {
 
             commentListLayerNode->setVisible(false);
 
-            // Scroll fix
-            if(Scrollbar* scrollBarCommentsList = dynamic_cast<Scrollbar*>(layer->getChildByID("ogdb-commentlist-scrollbar"_spr))){
-                auto scrollBarLayer = ScrollLayer::create(CCSize(100, 100));
-                scrollBarCommentsList->setTarget(scrollBarLayer);
-                scrollBarCommentsList->setVisible(false);
-            }
+            
         }
 	}
-
 
     void loadPageFromUserInfo(GJUserScore * userData) {
 
@@ -193,6 +211,9 @@ class $modify(ProfilePage) {
         bool m_fixIconsPosition = OGDBSetting::get("PROFILES_ICONFIXPOSITION")->getValue<bool>();
 
         this->m_fields->m_fixIconsPosition = m_fixIconsPosition;
+
+        // OGDBProfile::fixIconsPos(layer);
+
         // ---------- 
 
 		int color1 = userData->m_color1;
@@ -264,7 +285,7 @@ class $modify(ProfilePage) {
         else this->m_fields->m_isLoadedProfile = true;
 		if (layer->getChildByTag(3) != nullptr) return;
 
-        OGDBProfile::fixIconsPos(layer);
+        
         if(m_scrollbarEnabled) {
             auto scrollBarLayer = ScrollLayer::create(CCSize(100, 100));
             auto scrollView = Scrollbar::create(scrollBarLayer);

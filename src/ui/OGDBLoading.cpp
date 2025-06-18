@@ -14,24 +14,11 @@ OGDBLoading* OGDBLoading::create(bool showText, bool showAnimation) {
         ret->createDots();
 
         if (ret->m_showText) {
-            ret->m_textLabel = CCLabelBMFont::create("Loading...", "bigFont.fnt");
-            ret->m_textLabel->setPositionY(-40.f);
+            ret->m_textLabel = CCLabelBMFont::create("Loading", "bigFont.fnt");
+            ret->m_textLabel->setScale(0.5f);
+            ret->m_textLabel->setPositionY(-45.f);
             ret->m_textLabel->setVisible(false);
-            ret->m_textLabel->setOpacity(0);
             ret->addChild(ret->m_textLabel);
-        }
-
-        if (ret->m_showAnimation)
-            ret->animateIn();
-        else {
-            ret->setVisibleOptimized(true);
-            for (auto dot : ret->m_dots)
-                dot->setOpacity(255);
-            if (ret->m_textLabel) {
-                ret->m_textLabel->setVisible(true);
-                ret->m_textLabel->setOpacity(255);
-            }
-            ret->startLoopAnimation();
         }
 
         return ret;
@@ -40,16 +27,25 @@ OGDBLoading* OGDBLoading::create(bool showText, bool showAnimation) {
     return nullptr;
 }
 
-void OGDBLoading::createDots() {
-    float spacing = 30.f;
-    float totalWidth = 2 * spacing;
-    float startX = -totalWidth / 2;
+void OGDBLoading::start() {
+    if (m_showAnimation)
+        animateIn();
+    else {
+        setVisibleOptimized(true);
+        if (m_textLabel)
+            m_textLabel->setVisible(true);
+        startLoopAnimation();
+        animateText();
+    }
+}
 
-    for (int i = 0; i < 3; ++i) {
-        auto dot = CCSprite::createWithSpriteFrameName("uiDot_001.png");
-        dot->setPosition({ startX + i * spacing, 0.f });
+void OGDBLoading::createDots() {
+    const int numDots = 8;
+    for (int i = 0; i < numDots; ++i) {
+        auto dot = CCSprite::create("OT_uiDot_001.png"_spr);
         dot->setScale(0.8f);
         dot->setOpacity(0);
+        dot->setPosition({ 0.f, 0.f });
         this->addChild(dot);
         m_dots.push_back(dot);
     }
@@ -57,79 +53,158 @@ void OGDBLoading::createDots() {
 
 void OGDBLoading::animateIn() {
     setVisibleOptimized(true);
+    stopLoopAnimation();
 
-    for (auto dot : m_dots) {
+    const float radius = 30.f;
+    const float baseAngle = 90.f;
+    const size_t count = m_dots.size();
+
+    for (size_t i = 0; i < count; ++i) {
+        auto dot = m_dots[i];
         dot->stopAllActions();
         dot->setOpacity(0);
-    }
+        dot->setPosition({ 0.f, 0.f });
+        dot->setScale(0.4f);
 
-    for (size_t i = 0; i < m_dots.size(); ++i) {
-        auto dot = m_dots[i];
-        dot->runAction(CCSequence::create(
-            CCDelayTime::create(0.05f * i),
-            CCFadeTo::create(0.2f, 255),
+        float angle = baseAngle + (360.f / count) * i;
+        float rad = CC_DEGREES_TO_RADIANS(angle);
+        float x = radius * cosf(rad);
+        float y = radius * sinf(rad);
+
+        dot->runAction(CCSpawn::create(
+            CCMoveTo::create(0.35f, { x, y }),
+            CCFadeTo::create(0.35f, 255),
+            CCScaleTo::create(0.35f, 0.8f),
             nullptr
         ));
     }
 
     this->runAction(CCSequence::create(
-        CCDelayTime::create(m_animationTime),
-        CCCallFunc::create(this, callfunc_selector(OGDBLoading::onAnimationInFinished)),
+        CCDelayTime::create(0.35f),
+        CCCallFunc::create(this, callfunc_selector(OGDBLoading::startLoopAnimation)),
         nullptr
     ));
+
+    if (m_textLabel) {
+        m_textLabel->setOpacity(0);
+        m_textLabel->setScale(0.4f);
+        m_textLabel->setVisible(true);
+        m_textLabel->runAction(CCSpawn::create(
+            CCFadeTo::create(0.35f, 255),
+            CCScaleTo::create(0.35f, 0.5f),
+            nullptr
+        ));
+        animateText();
+    }
 }
 
-void OGDBLoading::onAnimationInFinished() {
+void OGDBLoading::transitionToCircle() {
+    const float radius = 30.f;
+    const float baseAngle = 90.f;
+    const size_t count = m_dots.size();
+
+    for (size_t i = 0; i < count; ++i) {
+        float angle = baseAngle + (360.f / count) * i;
+        float rad = CC_DEGREES_TO_RADIANS(angle);
+        float x = radius * cosf(rad);
+        float y = radius * sinf(rad);
+
+        m_dots[i]->setPosition({ x, y });
+        m_dots[i]->setOpacity(255);
+        m_dots[i]->setScale(0.8f);
+    }
+
+    this->runAction(CCSequence::create(
+        CCDelayTime::create(0.3f),
+        CCCallFunc::create(this, callfunc_selector(OGDBLoading::startLoopAnimation)),
+        nullptr
+    ));
+
     if (m_textLabel) {
         m_textLabel->setVisible(true);
-        m_textLabel->runAction(CCFadeTo::create(0.2f, 255));
+        animateText();
     }
-    startLoopAnimation();
 }
 
 void OGDBLoading::startLoopAnimation() {
-    for (size_t i = 0; i < m_dots.size(); ++i) {
+    schedule(schedule_selector(OGDBLoading::updateCirclePosition));
+}
+
+void OGDBLoading::updateCirclePosition(float dt) {
+    static float angleOffset = 0.f;
+    angleOffset += (360.f / m_loopTime) * dt;
+    const float radius = 30.f;
+    const float baseAngle = 90.f;
+    const size_t count = m_dots.size();
+
+    for (size_t i = 0; i < count; ++i) {
+        float angle = angleOffset + baseAngle + (360.f / count) * i;
+        float rad = CC_DEGREES_TO_RADIANS(angle);
+        float x = radius * cosf(rad);
+        float y = radius * sinf(rad);
+
         auto dot = m_dots[i];
-        dot->runAction(CCRepeatForever::create(
-            CCSequence::create(
-                CCFadeTo::create(0.25f, 128),
-                CCFadeTo::create(0.25f, 255),
-                CCDelayTime::create(0.1f * i),
-                nullptr
-            )
-        ));
+        dot->setPosition({ x, y });
+
+        float scale = 0.7f + 0.3f * sinf(rad);
+        dot->setScale(scale);
+        dot->setOpacity(static_cast<GLubyte>(128 + 127 * sinf(rad)));
     }
 }
 
-void OGDBLoading::stopLoopAnimation() {
-    for (auto dot : m_dots)
-        dot->stopAllActions();
+void OGDBLoading::animateText() {
+    if (!m_textLabel) return;
+    m_textLabel->stopAllActions();
+    m_textLabel->runAction(CCRepeatForever::create(
+        CCSequence::create(
+            CCSpawn::create(
+                CCScaleTo::create(0.6f, 0.45f),
+                CCFadeTo::create(0.6f, 150),
+                nullptr
+            ),
+            CCSpawn::create(
+                CCScaleTo::create(0.6f, 0.5f),
+                CCFadeTo::create(0.6f, 255),
+                nullptr
+            ),
+            nullptr
+        )
+    ));
 }
 
 void OGDBLoading::animateOut() {
     stopLoopAnimation();
 
-    for (size_t i = 0; i < m_dots.size(); ++i) {
-        auto dot = m_dots[i];
-        dot->runAction(CCSequence::create(
-            CCDelayTime::create(0.05f * i),
-            CCFadeTo::create(0.2f, 0),
+    for (auto dot : m_dots) {
+        dot->runAction(CCSpawn::create(
+            CCMoveTo::create(0.35f, ccp(0.f, 0.f)),
+            CCFadeTo::create(0.35f, 0),
             nullptr
         ));
     }
 
     if (m_textLabel)
-        m_textLabel->runAction(CCFadeTo::create(m_animationTime, 0));
+        m_textLabel->runAction(CCSpawn::create(
+            CCFadeTo::create(0.35f, 0),
+            CCScaleTo::create(0.35f, 0.4f),
+            nullptr
+        ));
 
     this->runAction(CCSequence::create(
-        CCDelayTime::create(m_animationTime),
-        CCCallFunc::create(this, callfunc_selector(OGDBLoading::hideCompletely)),
+        CCDelayTime::create(0.35f),
+        CCCallFunc::create(this, callfunc_selector(OGDBLoading::hideSelf)),
         nullptr
     ));
 }
 
-void OGDBLoading::hideCompletely() {
+void OGDBLoading::hideSelf() {
     setVisibleOptimized(false);
+}
+
+void OGDBLoading::stopLoopAnimation() {
+    unschedule(schedule_selector(OGDBLoading::updateCirclePosition));
+    for (auto dot : m_dots)
+        dot->stopAllActions();
 }
 
 void OGDBLoading::updateText(std::string const& newText) {
@@ -149,10 +224,10 @@ void OGDBLoading::finished(bool showAnimation) {
 
 void OGDBLoading::setVisibleOptimized(bool visible) {
     if (visible) {
-        this->setVisible(true);
-        this->setUserObject("isHidden", CCBool::create(false));
+        setVisible(true);
+        setUserObject("isHidden", CCBool::create(false));
     } else {
-        this->setVisible(false);
-        this->setUserObject("isHidden", CCBool::create(true));
+        setVisible(false);
+        setUserObject("isHidden", CCBool::create(true));
     }
 }

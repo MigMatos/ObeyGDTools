@@ -15,6 +15,7 @@ protected:
     CCMenu* m_navbarMenu;
     CCLabelBMFont* m_statusLabel;
     ScrollLayer* m_scrollLayer;
+    OGDBLoading* m_loadingObj;
 
     bool init() override;
 
@@ -32,6 +33,10 @@ public:
     void onAccount(CCObject*);
     void onNavOption(CCObject*);
 
+    void test1(CCObject*);
+    void test2(CCObject*);
+    void test3(CCObject*);
+    
     void switchToOGDBHomeScene(CCObject*);
 
     void keyBackClicked() override;

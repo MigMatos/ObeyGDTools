@@ -13,11 +13,13 @@ bool OGDBHome::init() {
     fetchData("Home");
 
     // ------------// 
-    
+
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    auto loading = OGDBLoading::create();
-    loading->setPosition(ccp(winSize.width / 2, winSize.height / 2));
-    this->addChild(loading, 999);
+
+
+    m_loadingObj = OGDBLoading::create();
+    m_loadingObj->setPosition(ccp(winSize.width / 2, winSize.height / 2));
+    this->addChild(m_loadingObj, 999);
 
     // ------------// 
 
@@ -251,10 +253,46 @@ void OGDBHome::createExtraButtons() {
 
     // ---- //
 
+    auto backBtn2 = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("tier1Icon_001.png"),
+        this,
+        menu_selector(OGDBHome::test1)
+    );
+    backBtn2->setAnchorPoint({ 0.f, 0.f });
+    backBtn2->setID("back-btn1"_spr);
+
+    // ---- //
+
+    auto backBtn3 = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("tier2Icon_001.png"),
+        this,
+        menu_selector(OGDBHome::test2)
+    );
+    backBtn3->setAnchorPoint({ 0.f, 0.f });
+    backBtn3->setID("back-btn2"_spr);
+
+    // ---- //
+
+    auto backBtn4 = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_viewLevelsBtn_001.png"),
+        this,
+        menu_selector(OGDBHome::test3)
+    );
+    backBtn4->setAnchorPoint({ 0.f, 0.f });
+    backBtn4->setID("back-btn3"_spr);
+
+    // ---- //
+
+
+
     auto menu = CCMenu::create();
 
     menu->addChild(SettingBtn);
     menu->addChild(backBtn);
+
+    menu->addChild(backBtn2);
+    menu->addChild(backBtn3);
+    menu->addChild(backBtn4);
 
     menu->setLayout(SimpleAxisLayout::create(Axis::Column)
         ->setMainAxisAlignment(MainAxisAlignment::Start)
@@ -272,6 +310,19 @@ void OGDBHome::createExtraButtons() {
 
     this->addChild(menu, 5);
 }
+
+void OGDBHome::test1(CCObject*) {
+    m_loadingObj->start();
+}
+
+void OGDBHome::test2(CCObject*) {
+    m_loadingObj->finished();
+}
+
+void OGDBHome::test3(CCObject*) {
+    m_loadingObj->updateText("2%");
+}
+
 
 void OGDBHome::switchToOGDBHomeScene(CCObject*) {
     auto layer = OGDBHome::create(); 
